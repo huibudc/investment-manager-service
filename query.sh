@@ -3,7 +3,7 @@ result=$(echo $progress | grep 'java -jar')
 if [[ $result != "" ]]
 then
   progressId=$(echo $result | cut -d' ' -f 2)
-  kill -9 $progressId
+  echo "Service is running, progressId=${progressId}"
+else
+  echo 'No progress exist.'
 fi
-java -jar investment-manager-service-1.0-SNAPSHOT.jar > /dev/null &
-echo "Service started."
