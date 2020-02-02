@@ -28,7 +28,7 @@ public class Scheduler {
         this.mailService = mailService;
     }
 
-    @Scheduled(cron = "0 */20 09-23 ? * *")
+    @Scheduled(cron = "0 */20 09-23 ? * MON-FRI")
     public void scheduleJob() {
         FOUNDATIONS.keySet().forEach( code -> {
             try {

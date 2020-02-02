@@ -1,2 +1,5 @@
 # Project exclude paths
 /target/
+/.idea/
+investment-manager-service.iml
+target
