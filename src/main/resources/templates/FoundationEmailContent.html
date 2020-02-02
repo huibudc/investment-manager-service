@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Foundation Infos</title>
+</head>
+<body>
+<table border="1">
+    <th>日期</th>
+    <th>代码</th>
+    <th>名称</th>
+    <th>估值</th>
+    <th>估值涨幅</th>
+    <th>当日净值</th>
+    <th>当日涨幅</th>
+    <th>累计净值</th>
+    <th>周内涨幅</th>
+    <th>月内涨幅</th>
+    <th>三月内涨幅</th>
+    <th>六月内涨幅</th>
+    <th>周内同类排名</th>
+    <th>月内同类排名</th>
+    <th>三月内同类排名</th>
+    <th>六月内同类排名</th>
+    <tbody>
+    <tr th:each="foundation : ${list}">
+        <td th:text="${foundation.date}"> 日期</td>
+        <td th:text="${foundation.code}"> 代码</td>
+        <td th:text="${foundation.name}"> 名称</td>
+        <td th:text="${foundation.estimatedValue}"> 估值</td>
+        <td th:text="${foundation.estimatedGain}"> 估值涨幅</td>
+        <td th:text="${foundation.actualValue}"> 当日净值</td>
+        <td th:text="${foundation.actualGain}"> 当日涨幅</td>
+        <td th:text="${foundation.accumulativeValue}"> 累计净值</td>
+        <td th:text="${foundation.gainWithinWeek}"> 周内涨幅</td>
+        <td th:text="${foundation.gainWithinMonth}"> 月内涨幅</td>
+        <td th:text="${foundation.gainWithinThreeMonth}"> 三月内涨幅</td>
+        <td th:text="${foundation.gainWithinSixMonth}"> 六月内涨幅</td>
+        <td th:text="${foundation.rankWithinWeek}"> 周内同类排名</td>
+        <td th:text="${foundation.rankWithinMonth}"> 月内同类排名</td>
+        <td th:text="${foundation.rankWithinThreeMonth}"> 三月内同类排名</td>
+        <td th:text="${foundation.rankWithinSixMonth}"> 六月内同类排名</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

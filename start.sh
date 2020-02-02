@@ -1,0 +1,1 @@
+java -jar investment-manager-service-1.0-SNAPSHOT.jar

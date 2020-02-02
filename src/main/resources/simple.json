@@ -1,0 +1,38 @@
+[
+  {
+    "code": "110022",
+    "name": "易方达消费行业股票",
+    "date": "20-01-23",
+    "estimatedValue": "3.0021",
+    "estimatedGain": "-2.27%",
+    "actualValue": "2.9690",
+    "actualGain": "-3.35%",
+    "accumulativeValue": "2.9690",
+    "gainWithinWeek": "-5.23%",
+    "gainWithinMonth": "1.26%",
+    "gainWithinThreeMonth": "3.20%",
+    "gainWithinSixMonth": "7.49%",
+    "rankWithinWeek": "1326 | 1380",
+    "rankWithinMonth": "938 | 1388",
+    "rankWithinThreeMonth": "992 | 1305",
+    "rankWithinSixMonth": "765 | 1227"
+  },
+  {
+    "code": "519674",
+    "name": "银河创新成长混合",
+    "date": "20-01-23",
+    "estimatedValue": "5.0153",
+    "estimatedGain": "-2.04%",
+    "actualValue": "5.0136",
+    "actualGain": "-2.08%",
+    "accumulativeValue": "5.0136",
+    "gainWithinWeek": "8.51%",
+    "gainWithinMonth": "25.78%",
+    "gainWithinThreeMonth": "48.82%",
+    "gainWithinSixMonth": "84.21%",
+    "rankWithinWeek": "1 | 3148",
+    "rankWithinMonth": "4 | 3256",
+    "rankWithinThreeMonth": "3 | 3187",
+    "rankWithinSixMonth": "3 | 3100"
+  }
+]
