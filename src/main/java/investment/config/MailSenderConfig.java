@@ -19,7 +19,7 @@ public class MailSenderConfig {
         mailSender.setPort(25);
         mailSender.setDefaultEncoding("UTF-8");
         mailSender.setUsername(FROM_USER);
-        mailSender.setPassword(ConfigLoader.emailPassword());
+        mailSender.setPassword(PropertiesConfigLoader.emailPassword());
 
         Properties props = new Properties();
         props.setProperty("mail.smtp.host", "smtp.163.com");

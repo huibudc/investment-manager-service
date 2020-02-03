@@ -1,19 +1,29 @@
 package investment.foundation;
 
+import investment.config.DBConfigLoader;
 import investment.foundation.modal.Foundation;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import static investment.config.Config.foundationUrl;
 
-import static investment.foundation.Config.foundationUrl;
-
+@Slf4j
 @Service
 public class CrawlerService {
-    public Foundation getFoundationInfo(String code) {
+    private final DBConfigLoader dbConfigLoader;
+
+    public CrawlerService(DBConfigLoader dbConfigLoader) {
+        this.dbConfigLoader = dbConfigLoader;
+    }
+
+    public Foundation getFoundationInfo(String code) throws Exception {
+        String url = foundationUrl(code);
+        log.info("Start to craw data from foundation code={} ,from url={}", code, url);
         try {
-            Document doc = Jsoup.connect(foundationUrl(code)).get();
+            Document doc = Jsoup.connect(url).get();
             String estimatedValueTime = doc.select("#gz_gztime").text().substring(1, 9);
             String estimatedValue = doc.select("#gz_gsz").text();  // 估值
             String estimatedGain = doc.select("#gz_gszzl").text();  //  估值涨幅
@@ -27,7 +37,7 @@ public class CrawlerService {
 
             Foundation foundation = new Foundation();
             foundation.setCode(code);
-            foundation.setName(Config.FOUNDATIONS.get(code));
+            foundation.setName(dbConfigLoader.investFoundations().get(code));
             foundation.setDate(estimatedValueTime);
             foundation.setEstimatedValue(estimatedValue);
             foundation.setEstimatedGain(estimatedGain);
@@ -45,7 +55,8 @@ public class CrawlerService {
             return foundation;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            log.info("Failed to craw data from foundation code={} ,from url={}", code, url);
+            throw e;
         }
     }
 }

@@ -3,7 +3,7 @@ package investment.utils;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 
-import static investment.config.ConfigLoader.keyStore;
+import static investment.config.PropertiesConfigLoader.keyStore;
 
 public class EncryptUtils {
     private static final StandardPBEStringEncryptor ENCRYPTOR = new StandardPBEStringEncryptor();

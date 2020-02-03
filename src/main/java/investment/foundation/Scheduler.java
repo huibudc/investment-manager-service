@@ -1,5 +1,6 @@
 package investment.foundation;
 
+import investment.config.DBConfigLoader;
 import investment.foundation.dao.FoundationMapper;
 import investment.foundation.modal.Foundation;
 import investment.service.MailService;
@@ -9,10 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import static investment.config.MailSenderConfig.FROM_USER;
 import static investment.config.MailSenderConfig.TO_USER;
-import static investment.foundation.Config.FOUNDATIONS;
 
 @Component
 public class Scheduler {
@@ -20,17 +19,19 @@ public class Scheduler {
     private final CrawlerService crawlerService;
     private final FoundationMapper foundationMapper;
     private final MailService mailService;
+    private final DBConfigLoader dbConfigLoader;
 
     @Autowired
-    public Scheduler(CrawlerService crawlerService, FoundationMapper foundationMapper, MailService mailService) {
+    public Scheduler(CrawlerService crawlerService, FoundationMapper foundationMapper, MailService mailService, DBConfigLoader dbConfigLoader) {
         this.crawlerService = crawlerService;
         this.foundationMapper = foundationMapper;
         this.mailService = mailService;
+        this.dbConfigLoader = dbConfigLoader;
     }
 
     @Scheduled(cron = "0 */20 09-23 ? * MON-FRI")
     public void scheduleJob() {
-        FOUNDATIONS.keySet().forEach( code -> {
+        dbConfigLoader.investFoundations().keySet().forEach( code -> {
             try {
                 LOGGER.info("Start to get info of foundation={}", code);
                 Foundation foundationInfo = crawlerService.getFoundationInfo(code);
