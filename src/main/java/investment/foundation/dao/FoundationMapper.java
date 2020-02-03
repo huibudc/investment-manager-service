@@ -10,24 +10,25 @@ import java.util.List;
 @Mapper
 public interface FoundationMapper {
     @Select("select" +
-            "    date," +
-            "    code," +
-            "    name," +
-            "    estimatedValue," +
-            "    estimatedGain," +
-            "    actualValue," +
-            "    actualGain," +
-            "    accumulativeValue," +
-            "    gainWithinWeek," +
-            "    gainWithinMonth," +
-            "    gainWithinThreeMonth," +
-            "    gainWithinSixMonth," +
-            "    rankWithinWeek," +
-            "    rankWithinMonth," +
-            "    rankWithinThreeMonth," +
-            "    rankWithinSixMonth " +
-            " from foundation" +
-            " order by date, code desc")
+            "    a.date," +
+            "    a.code," +
+            "    a.name," +
+            "    a.estimatedValue," +
+            "    a.estimatedGain," +
+            "    a.actualValue," +
+            "    a.actualGain," +
+            "    a.accumulativeValue," +
+            "    a.gainWithinWeek," +
+            "    a.gainWithinMonth," +
+            "    a.gainWithinThreeMonth," +
+            "    a.gainWithinSixMonth," +
+            "    a.rankWithinWeek," +
+            "    a.rankWithinMonth," +
+            "    a.rankWithinThreeMonth," +
+            "    a.rankWithinSixMonth " +
+            " from foundation a " +
+            " join (select distinct date from foundation order by date desc limit 5) as b on a.date = b.date " +
+            " order by a.date, a.code desc")
     List<Foundation> allFoundations();
 
     @Select("select * from foundation where code = #{code} and date= #{date}")

@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import static investment.config.Config.foundationUrl;
+import static investment.utils.Utils.convertToYYYY_MM_DD;
 
 @Slf4j
 @Service
@@ -38,7 +39,7 @@ public class CrawlerService {
             Foundation foundation = new Foundation();
             foundation.setCode(code);
             foundation.setName(dbConfigLoader.investFoundations().get(code));
-            foundation.setDate(estimatedValueTime);
+            foundation.setDate(convertToYYYY_MM_DD(estimatedValueTime));
             foundation.setEstimatedValue(estimatedValue);
             foundation.setEstimatedGain(estimatedGain);
             foundation.setActualValue(actualValue);

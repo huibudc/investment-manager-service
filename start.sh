@@ -1,5 +1,5 @@
 progress=$(ps -ef | grep investment-manager-service | head -1)
-result=$(echo $progress | grep 'java -jar')
+result=$(echo $progress | grep 'java -jar investment-manager-service')
 if [[ $result != "" ]]
 then
   progressId=$(echo $result | cut -d' ' -f 2)
