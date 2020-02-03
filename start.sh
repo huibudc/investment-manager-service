@@ -5,5 +5,5 @@ then
   progressId=$(echo $result | cut -d' ' -f 2)
   kill -9 $progressId
 fi
-java -jar investment-manager-service-1.0-SNAPSHOT.jar > /dev/null &
+nohup java -jar investment-manager-service-1.0-SNAPSHOT.jar > /dev/null 2>&1 &
 echo "Service started."

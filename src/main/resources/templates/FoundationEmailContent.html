@@ -29,7 +29,7 @@
     <tbody>
     <tr th:each="foundation : ${list}">
         <td th:text="${foundation.date}"> 日期</td>
-        <td th:text="${foundation.code}"> 代码</td>
+        <td><a th:href="@{'http://fund.eastmoney.com/'+${foundation.code}+'.html'}" target="_blank" th:text="${foundation.code}"></a></td>
         <td th:text="${foundation.name}"> 名称</td>
         <td th:text="${foundation.estimatedValue}"> 估值</td>
         <td th:text="${foundation.estimatedGain}"> 估值涨幅</td>
