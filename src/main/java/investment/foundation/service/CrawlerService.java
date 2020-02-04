@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static investment.config.Config.foundationUrl;
 import static investment.utils.Utils.convertToYYYY_MM_DD;
@@ -16,6 +17,7 @@ import static investment.utils.Utils.convertToYYYY_MM_DD;
 public class CrawlerService {
     private final DBConfigLoader dbConfigLoader;
 
+    @Autowired
     public CrawlerService(DBConfigLoader dbConfigLoader) {
         this.dbConfigLoader = dbConfigLoader;
     }

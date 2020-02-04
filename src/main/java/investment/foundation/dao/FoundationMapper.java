@@ -95,7 +95,20 @@ public interface FoundationMapper {
             "    )" +
             "    on duplicate key update " +
             "       code = values(code)," +
-            "       date = values(date) ")
+            "       date = values(date)," +
+            "       name = values(name)," +
+            "       estimatedValue = values(estimatedValue)," +
+            "       estimatedGain = values(estimatedGain)," +
+            "       actualValue = values(actualValue)," +
+            "       accumulativeValue = values(accumulativeValue)," +
+            "       gainWithinWeek = values(gainWithinWeek)," +
+            "       gainWithinMonth = values(gainWithinMonth)," +
+            "       gainWithinThreeMonth = values(gainWithinThreeMonth)," +
+            "       gainWithinSixMonth = values(gainWithinSixMonth)," +
+            "       rankWithinWeek = values(rankWithinWeek)," +
+            "       rankWithinMonth = values(rankWithinMonth)," +
+            "       rankWithinThreeMonth = values(rankWithinThreeMonth)," +
+            "       rankWithinSixMonth = values(rankWithinSixMonth)")
     void saveOrUpdateFoundation(Foundation foundation);
 
 }
