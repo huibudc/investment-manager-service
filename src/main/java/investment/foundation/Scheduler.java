@@ -31,8 +31,8 @@ public class Scheduler {
         this.dbConfigLoader = dbConfigLoader;
     }
 
-//    @Scheduled(cron = "0 */20 09-23 ? * MON-FRI")
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(cron = "0 */20 09-23 ? * MON-FRI")
+//    @Scheduled(fixedDelay = 30000)
     public void scheduleJob() {
         dbConfigLoader.investFoundations().keySet().forEach( code -> {
             try {
