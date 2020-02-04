@@ -28,7 +28,7 @@ public interface FoundationMapper {
             "    a.rankWithinSixMonth " +
             " from foundation a " +
             " join (select distinct date from foundation order by date desc limit 5) as b on a.date = b.date " +
-            " order by a.date, a.code desc")
+            " order by a.date desc, a.code desc")
     List<Foundation> allFoundations();
 
     @Select("select * from foundation where code = #{code} and date= #{date}")
@@ -96,6 +96,6 @@ public interface FoundationMapper {
             "    on duplicate key update " +
             "       code = values(code)," +
             "       date = values(date) ")
-    void addFoundation(Foundation foundation);
+    void saveOrUpdateFoundation(Foundation foundation);
 
 }

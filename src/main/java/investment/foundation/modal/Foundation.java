@@ -17,6 +17,43 @@ public class Foundation {
     private String rankWithinMonth;
     private String rankWithinThreeMonth;
     private String rankWithinSixMonth;
+    private Boolean isRankTop20WithinWeek;
+    private Boolean isRankTop20WithinMonth;
+    private Boolean isRankTop20ThreeMonth;
+    private Boolean isRankTop20SixMonth;
+    private Boolean shouldWarn;
+
+    public Boolean getRankTop20WithinWeek() {
+        return isRankTop20WithinWeek;
+    }
+
+    public void setRankTop20WithinWeek(Boolean rankTop20WithinWeek) {
+        isRankTop20WithinWeek = rankTop20WithinWeek;
+    }
+
+    public Boolean getRankTop20WithinMonth() {
+        return isRankTop20WithinMonth;
+    }
+
+    public void setRankTop20WithinMonth(Boolean rankTop20WithinMonth) {
+        isRankTop20WithinMonth = rankTop20WithinMonth;
+    }
+
+    public Boolean getRankTop20ThreeMonth() {
+        return isRankTop20ThreeMonth;
+    }
+
+    public void setRankTop20ThreeMonth(Boolean rankTop20ThreeMonth) {
+        isRankTop20ThreeMonth = rankTop20ThreeMonth;
+    }
+
+    public Boolean getRankTop20SixMonth() {
+        return isRankTop20SixMonth;
+    }
+
+    public void setRankTop20SixMonth(Boolean rankTop20SixMonth) {
+        isRankTop20SixMonth = rankTop20SixMonth;
+    }
 
     @Override
     public String toString() {
@@ -149,5 +186,13 @@ public class Foundation {
 
     public void setRankWithinSixMonth(String rankWithinSixMonth) {
         this.rankWithinSixMonth = rankWithinSixMonth;
+    }
+
+    public Boolean getShouldWarn() {
+        return shouldWarn;
+    }
+
+    public void setShouldWarn(Boolean shouldWarn) {
+        this.shouldWarn = shouldWarn;
     }
 }

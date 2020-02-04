@@ -7,6 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Foundation Infos</title>
+    <style>
+        .warning {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <table border="1">
@@ -27,7 +32,8 @@
     <th>三月内同类排名</th>
     <th>六月内同类排名</th>
     <tbody>
-    <tr th:each="foundation : ${list}">
+    <tr th:each="foundation : ${list}"
+        th:style="'color:' + @{(${foundation.shouldWarn} ? 'red' : '')} + ''">
         <td th:text="${foundation.date}"> 日期</td>
         <td><a th:href="@{'http://fund.eastmoney.com/'+${foundation.code}+'.html'}" target="_blank" th:text="${foundation.code}"></a></td>
         <td th:text="${foundation.name}"> 名称</td>

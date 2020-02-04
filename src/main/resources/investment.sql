@@ -42,3 +42,24 @@ insert into test values ('2');
 insert into test values ('3');
 insert into test values ('4');
 insert into test values ('5');
+
+select
+    a.date,
+    a.code,
+    a.name,
+    a.estimatedValue,
+    a.estimatedGain,
+    a.actualValue,
+    a.actualGain,
+    a.accumulativeValue,
+    a.gainWithinWeek,
+    a.gainWithinMonth,
+    a.gainWithinThreeMonth,
+    a.gainWithinSixMonth,
+    a.rankWithinWeek,
+    a.rankWithinMonth,
+    a.rankWithinThreeMonth,
+    a.rankWithinSixMonth
+ from foundation a
+ join (select distinct date from foundation order by date desc limit 5) as b on a.date = b.date
+ order by a.date desc, a.code desc;

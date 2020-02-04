@@ -1,4 +1,4 @@
-package investment.foundation;
+package investment.foundation.service;
 
 import investment.config.DBConfigLoader;
 import investment.foundation.modal.Foundation;
