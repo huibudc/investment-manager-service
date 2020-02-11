@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import static investment.config.MailSenderConfig.FROM_USER;
 import static investment.config.MailSenderConfig.TO_USER;
-import static investment.utils.Utils.GSON;
 
 @Component
 public class Scheduler {
@@ -32,12 +31,17 @@ public class Scheduler {
         this.dbConfigLoader = dbConfigLoader;
     }
 
-    @Scheduled(cron = "0 */20 09-15 ? * MON-FRI")
+    @Scheduled(fixedDelay = 30000)
+    public void heartBeat() {
+        LOGGER.info("I'm running");
+    }
+
+    @Scheduled(cron = "0 40 14 ? * MON-FRI")
     public void scheduleJobInTradingTime() {
         getFoundationDataAndSendMail();
     }
 
-    @Scheduled(cron = "0 */50 15-23 ? * MON-FRI")
+    @Scheduled(cron = "0 0 23 ? * MON-FRI")
     public void scheduleJobOutOfTradingTime() {
         getFoundationDataAndSendMail();
     }
@@ -49,6 +53,7 @@ public class Scheduler {
                 Foundation foundationInfo = crawlerService.getFoundationInfo(code);
                 foundationService.addFoundation(foundationInfo);
                 LOGGER.info("Success to get info of foundation={}", code);
+                Thread.sleep(30000);
             } catch (Exception e) {
                 LOGGER.warn("Failed to get info of foundation={}, due to {}", code, e.getMessage());
                 e.printStackTrace();
