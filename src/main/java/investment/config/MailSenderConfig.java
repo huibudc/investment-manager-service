@@ -9,16 +9,13 @@ import java.util.Properties;
 
 @Configuration
 public class MailSenderConfig {
-    public static final String FROM_USER = "huibudc_auto_test@163.com";
-    public static final String TO_USER = "xiang1990_ok@126.com";
-
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.163.com");
         mailSender.setPort(25);
         mailSender.setDefaultEncoding("UTF-8");
-        mailSender.setUsername(FROM_USER);
+        mailSender.setUsername(PropertiesConfigLoader.fromUser());
         mailSender.setPassword(PropertiesConfigLoader.emailPassword());
 
         Properties props = new Properties();

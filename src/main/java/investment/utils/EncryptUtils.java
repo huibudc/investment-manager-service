@@ -21,10 +21,10 @@ public class EncryptUtils {
         return ENCRYPTOR.decrypt(text);
     }
 
-//    public static void main(String[] args) {
-//        var mysqlPassword = "adsfasd";
-//        var mysqlPasswordEncrypted = encrypt(mysqlPassword);
-//        System.out.println(mysqlPasswordEncrypted);
-//        System.out.println(decrypt( mysqlPasswordEncrypted));
-//    }
+    public static void main(String[] args) {
+        var mysqlPassword = "xxxxxxxxx";
+        var mysqlPasswordEncrypted = encrypt(mysqlPassword);
+        System.out.println(mysqlPasswordEncrypted);
+        System.out.println(decrypt( mysqlPasswordEncrypted));
+    }
 }

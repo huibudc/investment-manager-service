@@ -1,6 +1,8 @@
 package investment.foundation;
 
 import investment.config.DBConfigLoader;
+import investment.config.PropertiesConfigLoader;
+import investment.foundation.dao.HealthMapper;
 import investment.foundation.modal.Foundation;
 import investment.foundation.service.CrawlerService;
 import investment.foundation.service.FoundationService;
@@ -12,8 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static investment.config.MailSenderConfig.FROM_USER;
-import static investment.config.MailSenderConfig.TO_USER;
+import static investment.config.MailSenderConfig.*;
 
 @Component
 public class Scheduler {
@@ -22,18 +23,25 @@ public class Scheduler {
     private final FoundationService foundationService;
     private final MailService mailService;
     private final DBConfigLoader dbConfigLoader;
+    private final HealthMapper healthMapper;
 
     @Autowired
-    public Scheduler(CrawlerService crawlerService, FoundationService foundationService, MailService mailService, DBConfigLoader dbConfigLoader) {
+    public Scheduler(CrawlerService crawlerService, FoundationService foundationService, MailService mailService, DBConfigLoader dbConfigLoader, HealthMapper healthMapper) {
         this.crawlerService = crawlerService;
         this.foundationService = foundationService;
         this.mailService = mailService;
         this.dbConfigLoader = dbConfigLoader;
+        this.healthMapper = healthMapper;
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 300000)
     public void heartBeat() {
-        LOGGER.info("I'm running");
+        if (healthMapper.health() == 1) {
+            LOGGER.info("I'm running well");
+        } else {
+            LOGGER.info("I'm running not well, can't connect to DB");
+            mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), "Exception Alert", "Failed to connect to DB, please check.", "");
+        }
     }
 
     @Scheduled(cron = "0 40 14 ? * MON-FRI")
@@ -47,18 +55,19 @@ public class Scheduler {
     }
 
     private void getFoundationDataAndSendMail() {
-        dbConfigLoader.investFoundations().keySet().forEach( code -> {
+        dbConfigLoader.investFoundations().keySet().forEach(code -> {
             try {
                 LOGGER.info("Start to get info of foundation={}", code);
                 Foundation foundationInfo = crawlerService.getFoundationInfo(code);
                 foundationService.addFoundation(foundationInfo);
                 LOGGER.info("Success to get info of foundation={}", code);
-                Thread.sleep(30000);
+                Thread.sleep(20000);
             } catch (Exception e) {
                 LOGGER.warn("Failed to get info of foundation={}, due to {}", code, e.getMessage());
                 e.printStackTrace();
             }
         });
-        mailService.sendMimeMessage(FROM_USER, TO_USER, "Foundation Infos", MailUtils.renderFoundationEmailContent(foundationService.rankingFoundations()));
+        String content = MailUtils.renderFoundationEmailContent(foundationService.rankingFoundations());
+        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), "Foundation Infos", content, PropertiesConfigLoader.ccUser());
     }
 }

@@ -9,6 +9,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.*;
+import java.net.URL;
+import java.util.regex.Pattern;
+
 import static investment.config.Config.foundationUrl;
 import static investment.utils.Utils.convertToYYYY_MM_DD;
 
@@ -26,6 +31,10 @@ public class CrawlerService {
         String url = foundationUrl(code);
         log.info("Start to craw data from foundation code={} ,from url={}", code, url);
         try {
+            if (isDisallowToFetchData(url)) {
+                log.info("Not allow to craw data from url={}, please check the robots file from http://fund.eastmoney.com/robots.txt", url);
+                throw new RuntimeException("Not allow to craw data, please check the robots file from http://fund.eastmoney.com/robots.txt");
+            }
             Document doc = Jsoup.connect(url).get();
             String estimatedValueTime = doc.select("#gz_gztime").text().substring(1, 9);
             String estimatedValue = doc.select("#gz_gsz").text();  // 估值
@@ -61,5 +70,35 @@ public class CrawlerService {
             log.info("Failed to craw data from foundation code={} ,from url={}", code, url);
             throw e;
         }
+    }
+
+    public static Boolean isDisallowToFetchData(String targetUrl) {
+        boolean isDisAllowToFetch = true;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("User-agent:") && !line.contains("User-agent: *")) {
+                    log.info("Not allow to craw data");
+                    throw new RuntimeException("Not allow to craw data, please check the robots file from http://fund.eastmoney.com/robots.txt");
+                }
+                if (line.startsWith("Disallow:")) {
+                    String pattern = line.split(":")[1].trim();
+                    boolean isDisallow = Pattern.compile(pattern).matcher(targetUrl).find();
+                    isDisAllowToFetch = isDisallow;
+                    log.info("Current url: {}, Disallow pattern is {}, isDisallow={}", targetUrl, pattern, isDisallow);
+                    if (isDisAllowToFetch) {
+                        break;
+                    }
+                }
+            }
+            return isDisAllowToFetch;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    private static InputStream inputStream() throws IOException {
+        return new URL("http://fund.eastmoney.com/robots.txt").openStream();
     }
 }

@@ -32,6 +32,7 @@ insert into invest_foundation (code, name) values('260108', '景顺长城新兴�
 insert into invest_foundation (code, name) values('005911', '广发双擎升级混合');
 insert into invest_foundation (code, name) values('004851', '广发医疗保健股票');
 insert into invest_foundation (code, name) values('002121', '广发沪港深新起点股票');
+insert into invest_foundation (code, name) values('161725', '招商中证白酒指数基金');
 
 select a.*
 from foundation a

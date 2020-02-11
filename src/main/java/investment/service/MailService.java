@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
 import javax.mail.internet.MimeMessage;
 
 @Service
@@ -19,20 +20,23 @@ public class MailService {
         this.mailSender = mailSender;
     }
 
-    public void sendMimeMessage(String from, String to, String subject, String content) {
+    public void sendMimeMessage(String from, String to, String subject, String content, String cc) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
-            LOGGER.info("Sending email to {}", to);
+            LOGGER.info("Sending email to={}, cc={}", to, cc);
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(from);
             helper.setTo(to);
+            helper.setCc(cc);
             helper.setSubject(subject);
             helper.setText(content, true);
             mailSender.send(message);
-            LOGGER.info("Sent email to {}", to);
+            LOGGER.info("Sent email to={}, cc={}", to, cc);
         } catch (Exception e) {
             LOGGER.error("Failed to send email to {}, due to {}", to, e.getMessage());
             e.printStackTrace();
         }
     }
+
+
 }

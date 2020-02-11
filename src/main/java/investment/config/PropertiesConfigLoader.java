@@ -29,13 +29,20 @@ public class PropertiesConfigLoader {
             e.printStackTrace();
         }
     }
-
-    private static String propertyFilePath() {
-        return isWindows() ? windowsConfigPath : linuxConfigPath;
-    }
-
     public static String mysqlPassword() {
         return EncryptUtils.decrypt(getProperty("mysqlPassword"));
+    }
+
+    public static String fromUser() {
+        return getProperty("FROM_USER");
+    }
+
+    public static String toUser() {
+        return getProperty("TO_USER");
+    }
+
+    public static String ccUser() {
+        return getProperty("CHAO_QQ_COM");
     }
 
     public static String emailPassword() {
@@ -44,6 +51,10 @@ public class PropertiesConfigLoader {
 
     public static String keyStore() {
         return getProperty("keyStore");
+    }
+
+    private static String propertyFilePath() {
+        return isWindows() ? windowsConfigPath : linuxConfigPath;
     }
 
     private static String getProperty(String property) {
