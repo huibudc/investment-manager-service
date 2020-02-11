@@ -20,18 +20,17 @@ public class MailService {
         this.mailSender = mailSender;
     }
 
-    public void sendMimeMessage(String from, String to, String subject, String content, String cc) {
+    public void sendMimeMessage(String from, String to, String subject, String content) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
-            LOGGER.info("Sending email to={}, cc={}", to, cc);
+            LOGGER.info("Sending email to={}", to);
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(from);
             helper.setTo(to);
-            helper.setCc(cc);
             helper.setSubject(subject);
             helper.setText(content, true);
             mailSender.send(message);
-            LOGGER.info("Sent email to={}, cc={}", to, cc);
+            LOGGER.info("Sent email to={}", to);
         } catch (Exception e) {
             LOGGER.error("Failed to send email to {}, due to {}", to, e.getMessage());
             e.printStackTrace();

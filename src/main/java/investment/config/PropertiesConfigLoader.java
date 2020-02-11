@@ -63,5 +63,4 @@ public class PropertiesConfigLoader {
         }
         return PROPERTIES != null ? PROPERTIES.getProperty(property) : "";
     }
-
 }

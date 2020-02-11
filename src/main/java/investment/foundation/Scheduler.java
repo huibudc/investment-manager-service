@@ -40,7 +40,7 @@ public class Scheduler {
             LOGGER.info("I'm running well");
         } else {
             LOGGER.info("I'm running not well, can't connect to DB");
-            mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), "Exception Alert", "Failed to connect to DB, please check.", "");
+            mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), "Exception Alert", "Failed to connect to DB, please check.");
         }
     }
 
@@ -68,6 +68,7 @@ public class Scheduler {
             }
         });
         String content = MailUtils.renderFoundationEmailContent(foundationService.rankingFoundations());
-        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), "Foundation Infos", content, PropertiesConfigLoader.ccUser());
+        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), "Foundation Infos", content);
+        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.ccUser(), "Foundation Infos", content);
     }
 }
