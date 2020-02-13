@@ -1,32 +1,27 @@
 package investment.foundation.service;
 
-import investment.config.DBConfigLoader;
 import investment.foundation.modal.Foundation;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.regex.Pattern;
 
+import static investment.config.Config.FOUNDATIONS;
 import static investment.config.Config.foundationUrl;
 import static investment.utils.Utils.convertToYYYY_MM_DD;
 
 @Slf4j
 @Service
 public class CrawlerService {
-    private final DBConfigLoader dbConfigLoader;
-
-    @Autowired
-    public CrawlerService(DBConfigLoader dbConfigLoader) {
-        this.dbConfigLoader = dbConfigLoader;
-    }
-
     public Foundation getFoundationInfo(String code) throws Exception {
         String url = foundationUrl(code);
         log.info("Start to craw data from foundation code={} ,from url={}", code, url);
@@ -39,9 +34,11 @@ public class CrawlerService {
             String estimatedValueTime = doc.select("#gz_gztime").text().substring(1, 9);
             String estimatedValue = doc.select("#gz_gsz").text();  // 估值
             String estimatedGain = doc.select("#gz_gszzl").text();  //  估值涨幅
-            Elements todayActualUnit = doc.select(".fundInfoItem .dataItem02 .dataNums span");
-            String actualValue = todayActualUnit.first().text();
-            String actualGain = todayActualUnit.last().text();
+            String actualUnitDateStr = doc.select(".fundInfoItem .dataItem02 dt p").text();
+            String actualUnitDate = actualUnitDateStr.split(" ")[1];
+            Elements actualUnit = doc.select(".fundInfoItem .dataItem02 .dataNums span");
+            String actualValue = actualUnit.first().text() + " " + actualUnitDate;
+            String actualGain = actualUnit.last().text() + " " + actualUnitDate;
             String accumulativeValue = doc.select(".fundInfoItem .dataItem03 .dataNums span").first().text();
             Elements increaseAmountStages = doc.select("#increaseAmount_stage table tbody tr");
             Element stageIncreaseInfo = increaseAmountStages.get(1);
@@ -49,7 +46,7 @@ public class CrawlerService {
 
             Foundation foundation = new Foundation();
             foundation.setCode(code);
-            foundation.setName(dbConfigLoader.investFoundations().get(code));
+            foundation.setName(FOUNDATIONS.get(code));
             foundation.setDate(convertToYYYY_MM_DD(estimatedValueTime));
             foundation.setEstimatedValue(estimatedValue);
             foundation.setEstimatedGain(estimatedGain);
