@@ -11,7 +11,7 @@ import java.util.Properties;
 import static investment.utils.SystemInfoUtils.isWindows;
 
 public class PropertiesConfigLoader {
-    private static final String windowsConfigPath = "H:\\config.properties";
+    private static final String windowsConfigPath = "G:\\config.properties";
     private static final String linuxConfigPath = "/security/investment-manager-service.properties";
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfigLoader.class);
     private static Properties PROPERTIES = null;
