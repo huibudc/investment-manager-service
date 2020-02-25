@@ -41,8 +41,12 @@ public class PropertiesConfigLoader {
         return getProperty("TO_USER");
     }
 
-    public static String ccUser() {
+    public static String ChaoQqEmail() {
         return getProperty("CHAO_QQ_COM");
+    }
+
+    public static String LumenQqEmail() {
+        return getProperty("LUMEN_QQ_COM");
     }
 
     public static String emailPassword() {

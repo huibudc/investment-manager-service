@@ -56,6 +56,7 @@ public class Scheduler {
         String content = MailUtils.renderFoundationEmailContent(foundationService.rankingFoundations());
         String subject = getDateYYYY_MM_DD() + " Foundation Infos";
         mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), subject, content);
-        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.ccUser(), subject, content);
+        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.ChaoQqEmail(), subject, content);
+        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.LumenQqEmail(), subject, content);
     }
 }
