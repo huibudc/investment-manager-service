@@ -1,7 +1,9 @@
 package investment.foundation;
 
+import investment.config.FoundationConfigLoader;
 import investment.config.PropertiesConfigLoader;
 import investment.foundation.modal.Foundation;
+import investment.foundation.modal.InvestFoundation;
 import investment.foundation.service.CrawlerService;
 import investment.foundation.service.FoundationService;
 import investment.service.MailService;
@@ -12,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static investment.cache.cacheStore.foundationMap;
-import static investment.config.Config.FOUNDATIONS;
+import static investment.config.PropertiesConfigLoader.*;
+import static investment.utils.MailUtils.renderFoundationEmailContent;
 import static investment.utils.Utils.getDateYYYY_MM_DD;
 
 @Component
@@ -41,22 +46,23 @@ public class Scheduler {
     }
 
     private void getFoundationDataAndSendMail() {
-        FOUNDATIONS.keySet().forEach(code -> {
+        List<InvestFoundation> investFoundations = FoundationConfigLoader.investFoundations();
+        investFoundations.forEach(investFoundation -> {
             try {
-                LOGGER.info("Start to get info of foundation={}", code);
-                Foundation foundationInfo = crawlerService.getFoundationInfo(code);
-                foundationMap.put(code, foundationInfo);
-                LOGGER.info("Success to get info of foundation={}", code);
+                LOGGER.info("Start to get info of foundation={}", investFoundation.getCode());
+                Foundation foundationInfo = crawlerService.getFoundationInfo(investFoundation.getCode(), investFoundation.getName());
+                foundationMap.put(investFoundation.getCode(), foundationInfo);
+                LOGGER.info("Success to get info of foundation={}", investFoundation.getCode());
                 Thread.sleep(20000);
             } catch (Exception e) {
-                LOGGER.warn("Failed to get info of foundation={}, due to {}", code, e.getMessage());
+                LOGGER.warn("Failed to get info of foundation={}, due to {}", investFoundation.getCode(), e.getMessage());
                 e.printStackTrace();
             }
         });
-        String content = MailUtils.renderFoundationEmailContent(foundationService.rankingFoundations());
-        String subject = getDateYYYY_MM_DD() + " Foundation Infos";
-        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.toUser(), subject, content);
-        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.ChaoQqEmail(), subject, content);
-        mailService.sendMimeMessage(PropertiesConfigLoader.fromUser(), PropertiesConfigLoader.LumenQqEmail(), subject, content);
+
+        loadProperties();
+        emailList().forEach(email -> {
+            mailService.sendMimeMessage(fromUser(), email, getDateYYYY_MM_DD() + " Foundation Infos", renderFoundationEmailContent(foundationService.rankingFoundations()));
+        });
     }
 }

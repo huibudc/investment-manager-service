@@ -6,9 +6,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import static investment.utils.SystemInfoUtils.isWindows;
+import static java.util.Arrays.asList;
 
 public class PropertiesConfigLoader {
     private static final String windowsConfigPath = "G:\\config.properties";
@@ -29,6 +34,15 @@ public class PropertiesConfigLoader {
             e.printStackTrace();
         }
     }
+
+    public static List<String> emailList() {
+        try {
+            return Arrays.stream(getProperty("EMAILS").split(",")).map(String::trim).collect(Collectors.toList());
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
     public static String mysqlPassword() {
         return EncryptUtils.decrypt(getProperty("mysqlPassword"));
     }

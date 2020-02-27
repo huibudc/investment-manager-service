@@ -1,11 +1,12 @@
 package investment.foundation.service;
 
 import investment.foundation.modal.Foundation;
-import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -14,15 +15,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.regex.Pattern;
-
-import static investment.config.Config.FOUNDATIONS;
 import static investment.config.Config.foundationUrl;
 import static investment.utils.Utils.convertToYYYY_MM_DD;
 
-@Slf4j
 @Service
 public class CrawlerService {
-    public Foundation getFoundationInfo(String code) throws Exception {
+    private final static Logger log = LoggerFactory.getLogger(CrawlerService.class);
+    public Foundation getFoundationInfo(String code, String name) throws Exception {
         String url = foundationUrl(code);
         log.info("Start to craw data from foundation code={} ,from url={}", code, url);
         try {
@@ -46,7 +45,7 @@ public class CrawlerService {
 
             Foundation foundation = new Foundation();
             foundation.setCode(code);
-            foundation.setName(FOUNDATIONS.get(code));
+            foundation.setName(name);
             foundation.setDate(convertToYYYY_MM_DD(estimatedValueTime));
             foundation.setEstimatedValue(estimatedValue);
             foundation.setEstimatedGain(estimatedGain);
