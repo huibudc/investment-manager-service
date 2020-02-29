@@ -1,21 +1,21 @@
 package investment.foundation.service;
 
 import investment.foundation.modal.Foundation;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static investment.cache.cacheStore.foundationMap;
+import static investment.cache.cacheStore.getFoundationMapCache;
 import static investment.utils.Utils.GSON;
 
-@Slf4j
 @Service
 public class FoundationService {
+    private final static Logger log = LoggerFactory.getLogger(CrawlerService.class);
 
     public List<Foundation> rankingFoundations() {
-        List<Foundation> foundations = new ArrayList<>(foundationMap.values());
+        List<Foundation> foundations = new ArrayList<>(getFoundationMapCache().values());
         for (Foundation foundation : foundations) {
             try {
                 foundation.setRankTop20WithinWeek(isTop20(foundation.getRankWithinWeek()));

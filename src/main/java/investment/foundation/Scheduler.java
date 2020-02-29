@@ -1,22 +1,20 @@
 package investment.foundation;
 
-import investment.config.FoundationConfigLoader;
-import investment.config.PropertiesConfigLoader;
+import investment.cache.FileStorage;
 import investment.foundation.modal.Foundation;
-import investment.foundation.modal.InvestFoundation;
 import investment.foundation.service.CrawlerService;
 import investment.foundation.service.FoundationService;
 import investment.service.MailService;
-import investment.utils.MailUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
-import static investment.cache.cacheStore.foundationMap;
+import static investment.cache.FileStorage.updateStorage;
+import static investment.cache.cacheStore.setFoundationMapCache;
+import static investment.config.FoundationConfig.investFoundations;
 import static investment.config.PropertiesConfigLoader.*;
 import static investment.utils.MailUtils.renderFoundationEmailContent;
 import static investment.utils.Utils.getDateYYYY_MM_DD;
@@ -35,6 +33,12 @@ public class Scheduler {
         this.mailService = mailService;
     }
 
+//    @Scheduled(fixedDelay = 100000)
+    public void test() {
+        getFoundationDataAndSendMail();
+        updateStorage();
+    }
+
     @Scheduled(cron = "0 40 14 ? * MON-FRI")
     public void scheduleJobInTradingTime() {
         getFoundationDataAndSendMail();
@@ -43,15 +47,21 @@ public class Scheduler {
     @Scheduled(cron = "0 0 23 ? * MON-FRI")
     public void scheduleJobOutOfTradingTime() {
         getFoundationDataAndSendMail();
+        updateStorage();
     }
 
     private void getFoundationDataAndSendMail() {
-        List<InvestFoundation> investFoundations = FoundationConfigLoader.investFoundations();
-        investFoundations.forEach(investFoundation -> {
+        getFoundationUpdate();
+        loadProperties();
+        sendEmail();
+    }
+
+    private void getFoundationUpdate() {
+        investFoundations().forEach(investFoundation -> {
             try {
                 LOGGER.info("Start to get info of foundation={}", investFoundation.getCode());
                 Foundation foundationInfo = crawlerService.getFoundationInfo(investFoundation.getCode(), investFoundation.getName());
-                foundationMap.put(investFoundation.getCode(), foundationInfo);
+                setFoundationMapCache(investFoundation.getCode(), foundationInfo);
                 LOGGER.info("Success to get info of foundation={}", investFoundation.getCode());
                 Thread.sleep(20000);
             } catch (Exception e) {
@@ -59,10 +69,12 @@ public class Scheduler {
                 e.printStackTrace();
             }
         });
+    }
 
-        loadProperties();
-        emailList().forEach(email -> {
-            mailService.sendMimeMessage(fromUser(), email, getDateYYYY_MM_DD() + " Foundation Infos", renderFoundationEmailContent(foundationService.rankingFoundations()));
-        });
+    private void sendEmail() {
+        String content = renderFoundationEmailContent(foundationService.rankingFoundations());
+        List<String> emails = emailList();
+        String subject = getDateYYYY_MM_DD() + " Foundation Infos";
+        emails.forEach(email -> mailService.sendMimeMessage(fromUser(), email, subject, content));
     }
 }
