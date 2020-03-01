@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import investment.foundation.modal.Foundation;
+import investment.foundation.modal.FoundationChart;
+import investment.foundation.modal.FoundationChartOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +13,9 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static investment.cache.cacheStore.foundationMapStorage;
+import static investment.cache.cacheStore.getFoundationMapStorage;
 import static investment.cache.cacheStore.updateFoundationMapStorage;
 import static investment.utils.Utils.GSON;
 import static investment.utils.Utils.getDateYYYY_MM_DD;
@@ -25,7 +28,7 @@ public class FileStorage {
 
     public static void updateStorage() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FOUNDATION_STORAGE_JSON))) {
-            String content = GSON.toJson(foundationMapStorage());
+            String content = GSON.toJson(getFoundationMapStorage());
             bufferedWriter.write(content);
             bufferedWriter.flush();
             LOGGER.info("Update file storage with content {} successfully", content);
@@ -40,7 +43,6 @@ public class FileStorage {
             JsonObject jsonObject = (JsonObject) JsonParser.parseReader(bufferedReader);
             jsonObject.entrySet()
                     .forEach(entry -> updateFoundationMapStorage(entry.getKey(), GSON.fromJson(entry.getValue().getAsJsonArray().toString(), TYPE)));
-            System.out.println(GSON.toJson(foundationMapStorage()));
             LOGGER.info("Load file storage with content {} successfully", GSON.toJson(jsonObject));
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,6 +54,35 @@ public class FileStorage {
     public static void main(String[] args) throws IOException {
 //        getWriteFile();
         loadStorageFile();
+        List<FoundationChartOption> collect = getFoundationMapStorage()
+                .entrySet()
+                .stream()
+                .map(item -> {
+                    List<Foundation> list = item.getValue();
+                    String code = list.get(0).getCode();
+                    String name = list.get(0).getName();
+                    List<String> xAxis = list.stream().map(it -> it.getActualValue().split(" ")[0]).collect(Collectors.toList());
+                    List<String> yAxis = list.stream().map(it -> it.getActualValue().split(" ")[1].replace(")", "").replace("(", "")).collect(Collectors.toList());
+                    return new FoundationChartOption(code, name, xAxis, yAxis);
+                }).collect(Collectors.toList());
+        LOGGER.info("Get data success {}", collect);
+    }
+
+    private static FoundationChart convert(Foundation foundation) {
+        try {
+            String[] split = foundation.getActualValue().split(" ");
+            String value = split[0];
+            String date = split[1].replace(")", "").replace("(", "");
+            return new FoundationChart(
+                    foundation.getCode(),
+                    foundation.getName(),
+                    date,
+                    value,
+                    foundation.getActualGain().split(" ")[0].replace("%", "")
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static void getWriteFile() {

@@ -21,7 +21,7 @@ public class cacheStore {
         foundationMapStorage.put(date, foundations);
     }
 
-    public static Map<String, List<Foundation>> foundationMapStorage() {
+    public static Map<String, List<Foundation>> getFoundationMapStorage() {
         return foundationMapStorage;
     }
 

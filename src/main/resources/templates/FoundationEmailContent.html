@@ -49,5 +49,48 @@
     </tr>
     </tbody>
 </table>
+<div id="charts"></div>
+<script crossorigin="anonymous" integrity="sha384-mlceH9HlqLp7GMKHrj5Ara1+LvdTZVMx4S1U43/NxCvAkzIo8WJ0FE7duLel3wVo" src="https://lib.baomitu.com/jquery/3.4.1/jquery.js"></script>
+<script crossorigin="anonymous" integrity="sha384-dvRcIlIMcjGZ3zWdA8tp/2oMLeiAKMOSLt3kZZymNo5KRK80qLQo2F+YujiP25+9" src="https://lib.baomitu.com/echarts/4.6.0/echarts.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $.ajax({
+            type : "GET",
+            contentType: "application/json;charset=UTF-8",
+            url : "http://localhost:8081/investment/all",
+            success : function(result) {
+                $('#charts').empty()
+                var data = JSON.parse(result)
+                console.log(data)
+                data.forEach(item => {
+                    let id = 'charts_'+ item.code
+                    console.log(item)
+                    $('#charts').append('<div style="height:400px; width:400px;float:left;" id="'+ id + '"></div>')
+                    var chart = document.getElementById(id);
+                    var echart = echarts.init(chart);
+                    var option = {
+                        title: {
+                            text: item.name
+                        },
+                        xAxis : {
+                            data: item.xAxis
+                        },
+                        yAxis : {},
+                        series: [{
+                            name: 'value',
+                            type: 'line',
+                            data: item.yAxis
+                        }]
+                    };
+                    echart.setOption(option);
+                })
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+    });
+</script>
 </body>
 </html>
