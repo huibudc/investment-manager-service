@@ -22,6 +22,11 @@ public class Foundation {
     private Boolean isRankTop20ThreeMonth;
     private Boolean isRankTop20SixMonth;
     private Boolean shouldWarn;
+    private Long timeStamp = System.currentTimeMillis();
+
+    public Long getTimeStamp() {
+        return timeStamp;
+    }
 
     public Boolean getRankTop20WithinWeek() {
         return isRankTop20WithinWeek;

@@ -1,35 +1,30 @@
 package investment.cache;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import investment.foundation.modal.Foundation;
 import investment.foundation.modal.FoundationChart;
-import investment.foundation.modal.FoundationChartOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-
-import static investment.cache.cacheStore.getFoundationMapStorage;
-import static investment.cache.cacheStore.updateFoundationMapStorage;
 import static investment.utils.Utils.GSON;
-import static investment.utils.Utils.getDateYYYY_MM_DD;
+import static investment.utils.Utils.GSON_PRETTY;
 
 public class FileStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileStorage.class);
-    public static final String FOUNDATION_STORAGE_JSON = "foundationStorage.json";
+    public static final String FOUNDATION_STORAGE = "foundationStorage";
     public static final Type TYPE = new TypeToken<List<Foundation>>() {
     }.getType();
 
-    public static void updateStorage() {
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FOUNDATION_STORAGE_JSON))) {
-            String content = GSON.toJson(getFoundationMapStorage());
+    public static void updateStorage(Foundation foundation) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FOUNDATION_STORAGE, true))) {
+            String content = GSON.toJson(foundation);
             bufferedWriter.write(content);
+            bufferedWriter.write("\n");
             bufferedWriter.flush();
             LOGGER.info("Update file storage with content {} successfully", content);
         } catch (IOException e) {
@@ -38,34 +33,22 @@ public class FileStorage {
         }
     }
 
-    public static void loadStorageFile() {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FOUNDATION_STORAGE_JSON))) {
-            JsonObject jsonObject = (JsonObject) JsonParser.parseReader(bufferedReader);
-            jsonObject.entrySet()
-                    .forEach(entry -> updateFoundationMapStorage(entry.getKey(), GSON.fromJson(entry.getValue().getAsJsonArray().toString(), TYPE)));
-            LOGGER.info("Load file storage with content {} successfully", GSON.toJson(jsonObject));
+    public static List<Foundation> loadStorageFile() {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FOUNDATION_STORAGE))) {
+            List<Foundation> foundations = bufferedReader.lines().distinct().map(line -> GSON.fromJson(line, Foundation.class)).collect(Collectors.toList());
+            LOGGER.info("Load file storage with content {} successfully", "");
+            return foundations;
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.info("Load file storage failed");
+            return Collections.emptyList();
         }
     }
 
 
     public static void main(String[] args) throws IOException {
-//        getWriteFile();
+        testWriteFile();
         loadStorageFile();
-        List<FoundationChartOption> collect = getFoundationMapStorage()
-                .entrySet()
-                .stream()
-                .map(item -> {
-                    List<Foundation> list = item.getValue();
-                    String code = list.get(0).getCode();
-                    String name = list.get(0).getName();
-                    List<String> xAxis = list.stream().map(it -> it.getActualValue().split(" ")[0]).collect(Collectors.toList());
-                    List<String> yAxis = list.stream().map(it -> it.getActualValue().split(" ")[1].replace(")", "").replace("(", "")).collect(Collectors.toList());
-                    return new FoundationChartOption(code, name, xAxis, yAxis);
-                }).collect(Collectors.toList());
-        LOGGER.info("Get data success {}", collect);
     }
 
     private static FoundationChart convert(Foundation foundation) {
@@ -85,16 +68,10 @@ public class FileStorage {
         }
     }
 
-    private static void getWriteFile() {
+    private static void testWriteFile() {
         String simpleString = simpleString();
-        List<Foundation> fromJson = GSON.fromJson(simpleString, TYPE);
-        System.out.println(GSON.toJson(Map.of(getDateYYYY_MM_DD(), fromJson)));
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("foundationStorage.json"))) {
-            bufferedWriter.write(GSON.toJson(Map.of(getDateYYYY_MM_DD(), fromJson)));
-            bufferedWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        List<Foundation> fromJson = GSON_PRETTY.fromJson(simpleString, TYPE);
+        fromJson.forEach(FileStorage::updateStorage);
     }
 
     private static String simpleString() {

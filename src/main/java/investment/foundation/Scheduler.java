@@ -16,6 +16,7 @@ import static investment.cache.FileStorage.updateStorage;
 import static investment.cache.cacheStore.setFoundationMapCache;
 import static investment.config.FoundationConfig.investFoundations;
 import static investment.config.PropertiesConfigLoader.*;
+import static investment.utils.MailUtils.email;
 import static investment.utils.MailUtils.renderFoundationEmailContent;
 import static investment.utils.Utils.getDateYYYY_MM_DD;
 
@@ -35,8 +36,8 @@ public class Scheduler {
 
 //    @Scheduled(fixedDelay = 100000)
     public void test() {
-        getFoundationDataAndSendMail();
-        updateStorage();
+        getFoundationUpdate();
+        mailService.sendMimeMessage(fromUser(), "xiang1990_ok@126.com", getDateYYYY_MM_DD() + " Foundation Infos", email());
     }
 
     @Scheduled(cron = "0 40 14 ? * MON-FRI")
@@ -47,7 +48,6 @@ public class Scheduler {
     @Scheduled(cron = "0 0 23 ? * MON-FRI")
     public void scheduleJobOutOfTradingTime() {
         getFoundationDataAndSendMail();
-        updateStorage();
     }
 
     private void getFoundationDataAndSendMail() {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import static investment.cache.cacheStore.getFoundationMapCache;
-import static investment.utils.Utils.GSON;
+import static investment.utils.Utils.GSON_PRETTY;
 
 @Service
 public class FoundationService {
@@ -29,7 +29,7 @@ public class FoundationService {
                 foundation.setShouldWarn(!foundation.getRankTop20WithinWeek() && !foundation.getRankTop20SixMonth() && !foundation.getRankTop20ThreeMonth() && !foundation.getRankTop20SixMonth());
             } catch (Exception e) {
                 e.printStackTrace();
-                log.info("Failed to handle all foundations from cache {}", GSON.toJson(foundation));
+                log.info("Failed to handle all foundations from cache {}", GSON_PRETTY.toJson(foundation));
             }
         }
         return foundations;
