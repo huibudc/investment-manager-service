@@ -27,8 +27,6 @@ public class MailUtils {
                 "<body>" +
                 generateAggregateInfo() +
                 "</br>" +
-                "</br>" +
-                generateFoundationDetailsTables() +
                 "</body>" +
                 "</html>";
     }
