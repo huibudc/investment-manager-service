@@ -1,4 +1,4 @@
-package investment.foundation.service;
+package investment.database.service;
 
 import investment.foundation.modal.Foundation;
 import org.jsoup.Jsoup;
@@ -15,11 +15,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.regex.Pattern;
+
 import static investment.config.Config.foundationUrl;
 import static investment.utils.Utils.GSON;
 import static investment.utils.Utils.convertToYYYY_MM_DD;
 
-@Service
 public class CrawlerService {
     private final static Logger log = LoggerFactory.getLogger(CrawlerService.class);
 
@@ -98,7 +98,7 @@ public class CrawlerService {
             return isDisAllowToFetch;
         } catch (Exception e) {
             e.printStackTrace();
-            return true;
+            return false;
         }
     }
 
